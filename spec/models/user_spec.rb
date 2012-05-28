@@ -29,6 +29,9 @@ describe User do
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:remember_token) }
+  it { should respond_to(:feed) }
+  it { should respond_to(:relationships) }
+  it { should respond_to(:followed_users) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -37,6 +40,17 @@ describe User do
     before { @user.toggle!(:admin) }
 
     it { should be_admin }
+  end
+  
+  describe "following" do
+    let(:other_user) { FactoryGirl.create(:user) }    
+    before do
+      @user.save
+      @user.follow!(other_user)
+    end
+
+    it { should be_following(other_user) }
+    its(:followed_users) { should include(other_user) }
   end
   
   describe "when password is not present" do
